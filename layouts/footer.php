@@ -1,4 +1,13 @@
-  <!-- Side widgets-->
+<?php
+    
+    $sql = "SELECT * FROM categories ORDER BY id DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt ->execute();
+    $categories = $stmt->fetchAll();
+    // var_dump($categories);
+?> 
+ 
+ <!-- Side widgets-->
                 <div class="col-lg-4">
                     <!-- Search widget-->
                     <div class="card mb-4">
@@ -17,16 +26,20 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <ul class="list-unstyled mb-0">
-                                        <li><a href="#!">Web Design</a></li>
-                                        <li><a href="#!">HTML</a></li>
-                                        <li><a href="#!">Freebies</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-sm-6">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><a href="#!">JavaScript</a></li>
-                                        <li><a href="#!">CSS</a></li>
-                                        <li><a href="#!">Tutorials</a></li>
+                                        <?php 
+                                            foreach ($categories as $category){
+                                                $c_id = $category['id'];
+                                                $sql = "SELECT COUNT(posts.category_id) 'c_count' FROM posts WHERE posts.category_id = :CID";
+                                                $stmt = $conn->prepare($sql);
+                                                $stmt->bindParam(':CID',$c_id);
+                                                $stmt->execute();
+                                                $post = $stmt->fetch();
+                                                // var_dump($post['c_count']);
+
+                                        ?>
+                                            <li><a href="index.php?category_id=<?= $category['id'] ?>"><?= $category['name'] ?>
+                                            (<?= $post['c_count'] ?>)</a></li>
+                                        <?php } ?>
                                     </ul>
                                 </div>
                             </div>
@@ -42,10 +55,10 @@
         </div>
         <!-- Footer-->
         <footer class="py-5 bg-dark">
-            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+            <div class="container"><p class="m-0 text-center text-white"></p></div>
         </footer>
         <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src=""></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
     </body>
